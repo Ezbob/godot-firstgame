@@ -4,34 +4,34 @@ signal hit
 
 # Speed in (pixels per second)
 export var speed = 400 # export for inspector setting
+var velocity = Vector2()
 var screen_size
 
-# Called when the node enters the scene tree for the first time.
+var target = Vector2()
+
 func _ready():
 	screen_size = get_viewport_rect().size
 	hide()
+	
+func _input(event):
+	if event is InputEventScreenTouch and event.pressed:
+		target = event.position
 
-# movement
 func _process(delta):
-	var velocity = Vector2()
-	if Input.is_action_pressed("ui_right"):
-		velocity.x += 1
-	if Input.is_action_pressed("ui_left"):
-		velocity.x -= 1
-	if Input.is_action_pressed("ui_down"):
-		velocity.y += 1
-	if Input.is_action_pressed("ui_up"):
-		velocity.y -= 1
+
+	if position.distance_to(target) > 10:
+		velocity = (target - position).normalized() * speed
+	else:
+		velocity = Vector2()
 	
 	if velocity.length() > 0:
 		velocity = velocity.normalized() * speed
-		$AnimatedSprite.play()
+		$AnimatedSprite.set_speed_scale(2)
 	else:
-		$AnimatedSprite.stop()
+		$AnimatedSprite.set_speed_scale(0.4)
+
 	
 	position += velocity * delta
-	position.x = clamp(position.x, 0, screen_size.x)
-	position.y = clamp(position.y, 0, screen_size.y)
 	
 	if velocity.x != 0:
 		$AnimatedSprite.animation = "right"
@@ -40,20 +40,23 @@ func _process(delta):
 	elif velocity.y != 0:
 		$AnimatedSprite.animation = "up"
 		$AnimatedSprite.flip_v = velocity.y > 0
-	
 
-func _on_Player_body_entered(body):
+
+func _on_Player_body_entered(_body):
 	emit_signal("hit")
 	disable_me()
 
 func start(pos):
 	position = pos
+	target = pos
 	enable_me()
 
 func disable_me():
 	hide()
+	$AnimatedSprite.stop()
 	$CollisionShape2D.set_deferred("disabled", true) # we need to wait for when it is safe to set disabled to true
 
 func enable_me():
 	show()
+	$AnimatedSprite.play()
 	$CollisionShape2D.disabled = false
