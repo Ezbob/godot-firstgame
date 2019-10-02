@@ -3,11 +3,11 @@ extends Node
 export (PackedScene) var Mob
 var score
 
-func _ready():
+func _ready() -> void:
 	randomize()
 
 
-func game_over():
+func game_over() -> void:
 	$Music.stop()
 	$ScoreTimer.stop()
 	$MobTimer.stop()
@@ -15,7 +15,7 @@ func game_over():
 	$DeathSound.play()
 
 
-func new_game():
+func new_game() -> void:
 	score = 0
 	$Music.play()
 	$Player.start($StartPosition.position)
@@ -24,17 +24,17 @@ func new_game():
 	$HUD.show_message("Get Ready!")
 
 
-func _on_StartTimer_timeout():
+func _on_StartTimer_timeout() -> void:
 	$MobTimer.start()
 	$ScoreTimer.start()
 	
 
-func _on_ScoreTimer_timeout():
+func _on_ScoreTimer_timeout() -> void:
 	score += 1
 	$HUD.update_score(score)
 
 
-func _on_MobTimer_timeout():
+func _on_MobTimer_timeout() -> void:
 	$MobPath/MobSpawnLocation.set_offset(randi())
 	
 	var mob = Mob.instance()
