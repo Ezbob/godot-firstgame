@@ -16,6 +16,9 @@ func _ready() -> void:
 func _input(event: InputEvent) -> void:
 	if event is InputEventScreenTouch and event.pressed:
 		target = event.position
+		var rot = position.direction_to(target)
+		self.rotation = rot.angle() + PI / 2
+		
 
 func _process(delta: float) -> void:
 
@@ -32,15 +35,6 @@ func _process(delta: float) -> void:
 
 	
 	position += velocity * delta
-	
-	if velocity.x != 0:
-		$AnimatedSprite.animation = "right"
-		$AnimatedSprite.flip_v = false
-		$AnimatedSprite.flip_h = velocity.x < 0
-	elif velocity.y != 0:
-		$AnimatedSprite.animation = "up"
-		$AnimatedSprite.flip_v = velocity.y > 0
-
 
 func _on_Player_body_entered(_body: RigidBody2D) -> void:
 	emit_signal("hit")
