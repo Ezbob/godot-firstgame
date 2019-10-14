@@ -2,6 +2,8 @@ extends CanvasLayer
 
 signal start_game
 
+var highScore: int = 0
+
 func show_message(text: String) -> void:
 	$MessageLabel.text = text
 	$MessageLabel.show()
@@ -17,6 +19,9 @@ func show_game_over() -> void:
 	
 func update_score(score: int) -> void:
 	$ScoreLabel.text = str(score)
+	if (score > highScore):
+		highScore = score
+		$HighScoreLabel.text = "Highscore: " + str(score)
 
 func _on_MessageTimer_timeout() -> void:
 	$MessageLabel.hide()
@@ -24,4 +29,5 @@ func _on_MessageTimer_timeout() -> void:
 
 func _on_StartButton_pressed() -> void:
 	$StartButton.hide()
+	$HighScoreLabel.hide()
 	emit_signal("start_game")

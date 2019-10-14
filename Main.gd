@@ -13,6 +13,7 @@ func game_over() -> void:
 	$MobTimer.stop()
 	$HUD.show_game_over()
 	$DeathSound.play()
+	$HUD/HighScoreLabel.show()
 
 
 func new_game() -> void:
